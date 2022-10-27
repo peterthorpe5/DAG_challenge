@@ -308,6 +308,80 @@ frequency
 
 
 
+ Lets randomly subsample this to see if we can see any better trends. (the number to subsample by could be better chosen)
+
+
+```{r}
+
+time_series_data_subsample <- time_series_data[sample(nrow(time_series_data), 1000), ]
+
+ggplot(data = time_series_data_subsample, aes(x = C, y = id)) +
+  geom_line(linetype = "dashed")+
+  geom_point()
+
+```
+
+
+
+
+
+## 3 LOOK AT COL D 
+
+
+look at a quick plot D vs ID
+
+```{r}
+
+ggplot(data = time_series_data, aes(x = D, y = id)) +
+  geom_line(linetype = "dashed")+
+  geom_point()
+
+
+
+```
+
+
+ Lets randomly subsample this to see if we can see any better trends. (the number to subsample by could be better chosen)
+
+
+```{r}
+
+time_series_data_subsample <- time_series_data[sample(nrow(time_series_data), 1000), ]
+
+ggplot(data = time_series_data_subsample, aes(x = D, y = id)) +
+  geom_line(linetype = "dashed")+
+  geom_point()
+
+```
+
+
+
+```{r}
+# this doesnt help
+boxplot(time_series_data$D)
+
+
+
+```
+
+
+
+Ok, lets try a histogram of this. 
+
+```{r}
+
+
+# Extract histogram information
+hist_vec <- hist(time_series_data$D)   
+  
+# Store histogram counts in frequency
+frequency <- hist_vec$counts
+
+frequency
+
+```
+
+
 ## SUMMARY colA
 
 My hyposthesis for ColA is that is it temperature data over a year, based on the shape of the graph (although this graph is horrible - changing the defaults would be better) and based on the values. Min -7, mean of 9. The shape of the graph suggests to me the change in temp over the year. Given that there are 3.154e+7 seconds in a year and 105032 obseravtions. 
@@ -329,9 +403,7 @@ QUESTION TO THE REASEARCH TEAM/ problems: These temperatures (if it is temp data
 This is a poisson distribution. These are discreet counts of observations per time point. ColA and ColB have a 0.11 corrolation, thus they are not corrolated.  
 
 
-
-
-
+problem: Looking at the plot there is a periodical increase then sharpe decrease. The pattern looks too regular to be biological data? Systematic error?
 
 ## SUMMARY colC
 
@@ -344,5 +416,10 @@ summary(time_series_data)
 ColA and C have a corroltation of 0.46. This is somewhat corrolated, although not statistically significant. 
 
 QUESTION TO THE REASEARCH TEAM/ Problems: I am concerned that an element from ColD has ended up in ColC (max: 1098) .  Looking at the medians of both cols and the max in ColC. Although, there are a few other high enteries in ColC which may be out of place in ColD ... This needs to be clarified. 
+
+
+## SUMMARY colD
+There is a slight negative screw to the data with several very low values. 
+
 
 
