@@ -310,7 +310,7 @@ frequency
 
 ## SUMMARY colA
 
-My hyposthesis for ColA is that is it temperature data over a year, based on the shaoe if the graph (although this graph is horrible - changing the defaults would be better) and based on the values. Min -7, mean of 9. The shape of the graph suggests to me the change in temp over the year. Given that there are 3.154e+7 seconds in a year and 105032 obseravtions. 
+My hyposthesis for ColA is that is it temperature data over a year, based on the shape of the graph (although this graph is horrible - changing the defaults would be better) and based on the values. Min -7, mean of 9. The shape of the graph suggests to me the change in temp over the year. Given that there are 3.154e+7 seconds in a year and 105032 obseravtions. 
 
 print(3.154e+7 / 105032) = 300
 
@@ -320,19 +320,29 @@ Therefore there is an observation every 5 mins.
 
 
 
-QUESTION TO THE REASEARCH TEAM: These temperatures seem a little high for Antartica. Is the equipment callibrated correctly?
+QUESTION TO THE REASEARCH TEAM/ problems: These temperatures (if it is temp data) seem a little high for Antartica. Is the equipment callibrated correctly? I know there are serious warming problems, how does this compare to last year?
 
 
 
 ## SUMMARY colB
 
-This is a poisson distribution. These are discreet counts of observations per time point.It could be number of animals seen. ColA and ColB have a 0.11 corrolation, thus they are not corrolated.  
-
-I am presuming this is data from a weather station. So more likely to be ... a discete variable form a weather station?
-
-QUESTION TO THE REASEARCH TEAM: what are you counting here?
+This is a poisson distribution. These are discreet counts of observations per time point. ColA and ColB have a 0.11 corrolation, thus they are not corrolated.  
 
 
 
-## SUMMARY colB
+
+
+
+## SUMMARY colC
+
+
+```{r}
+summary(time_series_data)
+
+```
+
+ColA and C have a corroltation of 0.46. This is somewhat corrolated, although not statistically significant. 
+
+QUESTION TO THE REASEARCH TEAM/ Problems: I am concerned that an element from ColD has ended up in ColC (max: 1098) .  Looking at the medians of both cols and the max in ColC. Although, there are a few other high enteries in ColC which may be out of place in ColD ... This needs to be clarified. 
+
 
