@@ -21,3 +21,107 @@ knitr::opts_chunk$set(message=FALSE, tidy.opts=list(width.cutoff=80), tidy=TRUE)
 
 ```
 ## 0.1 time series data 
+
+
+105032 obervations recorded in 5 different ways ... 
+lets try and understand the properties: problems, trends corrolation ... and so on. 
+
+***
+
+## Load the library needed
+
+```{r}
+
+library(knitr)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(magrittr)
+library(devtools)
+# install_github("vqv/ggbiplot")
+library(ggbiplot)
+library(Hmisc)
+library(corrplot)
+
+
+
+```
+
+
+***
+
+##  Load the data
+
+counts were already generated using salmon and counts.matrix generated using trinity. 
+
+```{r}
+setwd("C:/Users/pjt6/Desktop/data_task")
+
+# check it
+getwd()
+
+```
+***
+
+
+The counts data in contained in the counts.matrix, each gene has a digital count per
+condition/ rep
+
+```{r}
+
+# load in the data
+time_series_data <- read.table("data/data.csv", sep=",", header = TRUE, row.names=NULL)
+
+
+summary(time_series_data)
+
+```
+\newpage
+
+have a quick look at the data:
+
+```{r}
+head(time_series_data)
+
+```
+
+```{r}
+
+# Using na.omit and assigning to another data frame
+time_series_data_without_NAs <- na.omit(time_series_data)
+
+```
+
+
+check for NA in the dataset.
+
+```{r}
+
+# Checking the dimensions with the dim() function (rows then columns)
+dim(time_series_data)
+
+dim(time_series_data_without_NAs)
+
+```
+
+
+There appears to be no NAs in the data. 
+now check for duplicated rows. 
+
+
+```{r}
+
+duplicated(time_series_data)
+sum (duplicated(time_series_data))
+
+
+```
+
+
+there are no duplicated rows. 
+
+
+```{r}
+# this doesnt help
+boxplot(time_series_data$A)
