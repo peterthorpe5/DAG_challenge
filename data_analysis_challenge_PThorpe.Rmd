@@ -20,7 +20,11 @@ error = TRUE
 knitr::opts_chunk$set(message=FALSE, tidy.opts=list(width.cutoff=80), tidy=TRUE) 
 
 ```
-## 0.1 time series data 
+## 1 the problem
+
+Data recived however, missing the coloumn names - data from Antartica. 
+
+## 2 time series data 
 
 
 105032 obervations recorded in 5 different ways ... 
@@ -56,7 +60,7 @@ library(corrplot)
 counts were already generated using salmon and counts.matrix generated using trinity. 
 
 ```{r}
-setwd("C:/Users/pjt6/Desktop/data_task")
+setwd("C:/Users/pjt6/Documents/DAG_challenge")
 
 # check it
 getwd()
@@ -112,7 +116,7 @@ now check for duplicated rows.
 
 ```{r}
 
-duplicated(time_series_data)
+# duplicated(time_series_data)  # dont run this!
 sum (duplicated(time_series_data))
 
 
@@ -125,3 +129,196 @@ there are no duplicated rows.
 ```{r}
 # this doesnt help
 boxplot(time_series_data$A)
+
+
+
+```
+
+
+lets do a PCA to see how the variables separate out. 
+
+```{r}
+
+time_series_data.pca <- prcomp(time_series_data[,c(1,2,3,4,5)], center = TRUE,scale. = TRUE)
+
+
+# ggbiplot(time_series_data.pca)
+# this wont install and run on my windows laptop!
+
+#############################################
+# library/3.6/gtable/R/gtable.rdb' is corrupt
+
+```
+
+
+lets have a look at some corrolation matrix between these 
+
+```{r}
+# get the first 5 cols. 
+time_series_data_w_last_clo <- time_series_data[,c(1,2,3,4,5)]
+
+# get a corrolation matrix with P values
+time_series.rcorr = rcorr(as.matrix(time_series_data_w_last_clo))
+
+# see the results
+time_series.rcorr
+
+
+
+```
+
+
+none of the corrolations are significant, see plot below. However, there is some loose corrolation. 
+
+
+```{r}
+	
+time_series.cor = cor(time_series_data_w_last_clo, method = c("spearman"))
+	
+corrplot(as.matrix(time_series.cor))
+
+```
+
+look at a quick plot A vs ID
+
+```{r}
+
+ggplot(data = time_series_data, aes(x = A, y = id)) +
+  geom_line(linetype = "dashed")+
+  geom_point()
+
+
+
+
+```
+
+
+Ok, so this is not a nice plot. Lets randomly subsample this to see if we can see any better trends. 
+
+
+```{r}
+
+time_series_data_subsample <- time_series_data[sample(nrow(time_series_data), 1000), ]
+
+ggplot(data = time_series_data_subsample, aes(x = A, y = id)) +
+  geom_line(linetype = "dashed")+
+  geom_point()
+
+```
+
+I dont know if there may be multiple peaks in this data set. So I will try a Fourier Transform.
+I know from my NMR days that I should be able to see peaks if there are any in the data here,
+but my code is not working. 
+
+
+```{r}
+
+# apply(time_series_data, 2,function(x) fft(as.numeric(x)))
+
+#A_fft <- as.data.frame(fft(as.numeric(time_series_data$A)))
+
+#A_fft <- unlist(A_fft)
+
+
+#ggplot(data = A_fft, aes(x = A_fft, y = time_series_data$id)) +
+#  geom_line(linetype = "dashed")+
+#  geom_point()
+
+```
+
+
+
+## 3 LOOK AT COL B 
+
+
+look at a quick plot B vs ID
+
+```{r}
+
+ggplot(data = time_series_data, aes(x = B, y = id)) +
+  geom_line(linetype = "dashed")+
+  geom_point()
+
+
+
+```
+
+
+That doesn thelp - lets try a histogram
+
+
+```{r}
+
+
+ggplot(data = time_series_data, aes(x=B)) + 
+  geom_histogram(binwidth=1)
+
+
+```
+
+Ok so we have a poisson distribution. These could be counts of observations per time point. 
+
+
+```{r}
+
+
+# Extract histogram information
+hist_vec <- hist(time_series_data$B)   
+  
+# Store histogram counts in frequency
+frequency <- hist_vec$counts
+
+frequency
+
+
+```
+
+
+## 3 LOOK AT COL C 
+
+
+look at a quick plot B vs ID
+
+```{r}
+
+ggplot(data = time_series_data, aes(x = B, y = id)) +
+  geom_line(linetype = "dashed")+
+  geom_point()
+
+
+
+```
+
+
+
+
+
+
+## SUMMARY colA
+
+My hyposthesis for ColA is that is it temperature data over a year, based on the shaoe if the graph (although this graph is horrible - changing the defaults would be better) and based on the values. Min -7, mean of 9. The shape of the graph suggests to me the change in temp over the year. Given that there are 3.154e+7 seconds in a year and 105032 obseravtions. 
+
+print(3.154e+7 / 105032) = 300
+
+300/60 =  5.
+
+Therefore there is an observation every 5 mins. 
+
+
+
+QUESTION TO THE REASEARCH TEAM: These temperatures seem a little high for Antartica. Is the equipment callibrated correctly?
+
+
+
+## SUMMARY colB
+
+This is a poisson distribution. These are discreet counts of observations per time point.It could be number of animals seen. ColA and ColB have a 0.11 corrolation, thus they are not corrolated.  
+
+I am presuming this is data from a weather station. So more likely to be ... a discete variable form a weather station?
+
+QUESTION TO THE REASEARCH TEAM: what are you counting here?
+
+
+
+## SUMMARY colB
+
