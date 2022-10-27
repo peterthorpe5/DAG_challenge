@@ -1,0 +1,23 @@
+---
+title: "Data analysis challenge"
+author: "Peter Thorpe"
+date: "26th Oct 2022"
+output:
+  pdf_document: default
+  html_document: default
+
+---
+
+```{r include=FALSE}
+
+knitr::opts_chunk$set(comment = NA)
+error = TRUE
+
+```
+
+
+```{r, global_options, include=FALSE}
+knitr::opts_chunk$set(message=FALSE, tidy.opts=list(width.cutoff=80), tidy=TRUE) 
+
+```
+## 0.1 time series data 
