@@ -486,5 +486,3 @@ Although if you look at the non subsampled plot you can see moving avaergaes ove
 The max value of colE is 100. With the highest number of observations in the historgam bin occuring at the top. I guess this is a percentage based count. 
 
 
-
-
