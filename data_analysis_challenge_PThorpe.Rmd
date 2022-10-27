@@ -90,6 +90,8 @@ head(time_series_data)
 
 ```
 
+##  cleanup if required
+
 ```{r}
 
 # Using na.omit and assigning to another data frame
@@ -126,30 +128,7 @@ sum (duplicated(time_series_data))
 there are no duplicated rows. 
 
 
-```{r}
-# this doesnt help
-boxplot(time_series_data$A)
-
-
-
-```
-
-
-lets do a PCA to see how the variables separate out. 
-
-```{r}
-
-time_series_data.pca <- prcomp(time_series_data[,c(1,2,3,4,5)], center = TRUE,scale. = TRUE)
-
-
-# ggbiplot(time_series_data.pca)
-# this wont install and run on my windows laptop!
-
-#############################################
-# library/3.6/gtable/R/gtable.rdb' is corrupt
-
-```
-
+##  corrolation matrix
 
 lets have a look at some corrolation matrix between these 
 
@@ -178,6 +157,35 @@ time_series.cor = cor(time_series_data_w_last_clo, method = c("spearman"))
 corrplot(as.matrix(time_series.cor))
 
 ```
+
+
+##  Lets start by looking at colA
+
+```{r}
+# this doesnt help
+boxplot(time_series_data$A)
+
+
+
+```
+
+
+lets do a PCA to see how the variables separate out. 
+
+```{r}
+
+time_series_data.pca <- prcomp(time_series_data[,c(1,2,3,4,5)], center = TRUE,scale. = TRUE)
+
+
+# ggbiplot(time_series_data.pca)
+# this wont install and run on my windows laptop!
+
+#############################################
+# library/3.6/gtable/R/gtable.rdb' is corrupt
+
+```
+
+
 
 look at a quick plot A vs ID
 
@@ -325,7 +333,7 @@ ggplot(data = time_series_data_subsample, aes(x = C, y = id)) +
 
 
 
-## 3 LOOK AT COL D 
+## 5 LOOK AT COL D 
 
 
 look at a quick plot D vs ID
@@ -382,6 +390,56 @@ frequency
 ```
 
 
+
+## 6 LOOK AT COL E 
+
+
+look at a quick plot E vs ID
+
+```{r}
+
+ggplot(data = time_series_data, aes(x = E, y = id)) +
+  geom_line(linetype = "dashed")+
+  geom_point()
+
+
+
+```
+
+
+
+ Lets randomly subsample this to see if we can see any better trends. (the number to subsample by could be better chosen)
+
+
+```{r}
+
+time_series_data_subsample <- time_series_data[sample(nrow(time_series_data), 1000), ]
+
+ggplot(data = time_series_data_subsample, aes(x = E, y = id)) +
+  geom_line(linetype = "dashed")+
+  geom_point()
+
+```
+
+
+
+Ok, lets try a histogram of this. 
+
+```{r}
+
+
+# Extract histogram information
+hist_vec <- hist(time_series_data$E)   
+  
+# Store histogram counts in frequency
+frequency <- hist_vec$counts
+
+frequency
+
+```
+
+
+
 ## SUMMARY colA
 
 My hyposthesis for ColA is that is it temperature data over a year, based on the shape of the graph (although this graph is horrible - changing the defaults would be better) and based on the values. Min -7, mean of 9. The shape of the graph suggests to me the change in temp over the year. Given that there are 3.154e+7 seconds in a year and 105032 obseravtions. 
@@ -400,7 +458,7 @@ QUESTION TO THE REASEARCH TEAM/ problems: These temperatures (if it is temp data
 
 ## SUMMARY colB
 
-This is a poisson distribution. These are discreet counts of observations per time point. ColA and ColB have a 0.11 corrolation, thus they are not corrolated.  
+This is a poisson distribution. These are discreet counts of observations per time point, where the observation is less likely over time. ColA and ColB have a 0.11 corrolation, thus they are not corrolated.  
 
 
 problem: Looking at the plot there is a periodical increase then sharpe decrease. The pattern looks too regular to be biological data? Systematic error?
@@ -419,7 +477,14 @@ QUESTION TO THE REASEARCH TEAM/ Problems: I am concerned that an element from Co
 
 
 ## SUMMARY colD
-There is a slight negative screw to the data with several very low values. 
+There is a slight negative screw to the data with several very low values. However, there does not seem to be a trend over time and looking at the subsampled plot - there is no trend over time. 
+
+Although if you look at the non subsampled plot you can see moving avaergaes over shorter time periods. 
+
+
+## SUMMARY colE
+The max value of colE is 100. With the highest number of observations in the historgam bin occuring at the top. I guess this is a percentage based count. 
+
 
 
 
